@@ -1,0 +1,155 @@
+Using the Simplified Method 
+
+The simplified method is an alternative to the calculation, allocation,
+and substantiation of actual expenses. In most cases, you will figure your deduction by multiplying
+$5, the prescribed rate, by the area of your home used for a qualified business use. The area you
+use to figure your deduction is limited to 300 square feet. See Simplified Amount, later, for
+information about figuring the amount of the deduction. For more information about the simplified
+method, see Revenue Procedure 2013-13, 2013-06 I.R.B. 478, available at
+IRS.gov/irb/2013-06_IRB#RP-2013-13. Actual expenses and depreciation of your home. If you
+elect to use the simplified method, you cannot deduct any actual expenses for the business except
+for business expenses that are not related to the use of the home. You also cannot deduct any
+depreciation (including any additional first-year depreciation) or section 179 expense for the
+portion of the home that is used for a qualified business use. The depreciation deduction allowable
+for that portion of the home is deemed to be zero for a year you use the simplified method. If you
+figure your deduction for business use of the home using actual expenses in a subsequent year,
+you will have to use the appropriate optional depreciation table for MACRS to figure your
+depreciation. More information. For more information about claiming depreciation in a subsequent
+year, see Revenue Procedure 2013-13, 2013-06 I.R.B. 478, available at
+IRS.gov/irb/2013-06_IRB#RP-2013-13. See Pub. 946 for the optional depreciation tables. Tip:
+Although you cannot deduct any depreciation or section 179 expense for the portion of your home
+used for a qualified business use, you may still claim depreciation or the section 179 expense
+deduction on other assets used in the business (for example, furniture and equipment). Expenses
+deductible without regard to business use. When using the simplified method, treat as personal
+expenses your mortgage interest, real estate taxes, and casualty losses. If you also rent part of
+your home, you must still allocate these expenses between rental use and personal use (for this
+purpose, personal use includes business use reported using the simplified method). No deduction
+of carryover of actual expenses. If you used actual expenses to figure your deduction for business
+use of the home in a prior year and your deduction was limited, you cannot deduct the disallowed
+amount carried over from the prior year during a year you figure your deduction using the
+simplified method. Instead, you will continue to carry over the disallowed amount to the next year
+that you use actual expenses to figure your deduction. 
+
+Electing the Simplified Method
+
+You choose
+whether or not to figure your deduction using the simplified method each tax year. Make the
+election for a home by using the simplified method to figure the deduction for the qualified
+business use of that home on a timely filed, original federal income tax return. An election for a tax
+year, once made, is irrevocable. A change from using the simplified method in one year to actual
+expenses in a succeeding tax year, or vice versa, is not a change in method of accounting and
+does not require the consent of the Commissioner. Shared use. If you share your home with
+someone else who also uses the home in a business that qualifies for this deduction, each of you
+makes your own election. More than one qualified business use. If you conduct more than one
+business that qualifies for this deduction in your home, your election to use the simplified method
+applies to all your qualified business uses of that home. More than one home. If you used more
+than one home in your business during the year (for example, you moved during the year), you
+can elect to use the simplified method for only one of the homes. You must figure the deduction for
+any other home using actual expenses.
+
+Simplified Amount
+
+Your deduction for the qualified
+business use of a home is the sum of each amount you figure for a separate qualified business
+use of your home. To figure your deduction for the business use of a home using the simplified
+method, 
+you will need to know the following information for each
+qualified business use of the home. • The allowable area of your home used in conducting the
+business. If you did not conduct the business for the entire year in the home or the area changed
+during the year, you will need to know the allowable area you used and the number of days you
+conducted the business for each month. • The gross income from the business use of your home.
+• The amount of the business expenses that are not re lated to the use of your home. • If the
+qualified business use is for a daycare facility that uses space in your home on a regular (but not
+exclusive) basis, you will need to know the percentage of time that part of your home is used for
+daycare. To figure the amount you can deduct for qualified business use of your home using the
+simplified method, follow these three steps. 1. Multiply the allowable area by $5 (or less than $5 if
+the qualified business use is for a daycare that uses space in your home on a regular, but not
+exclusive, basis). See Allowable area and Space used regularly for daycare, later. 2. Subtract the
+expenses from the business that are not related to the use of the home from the gross income
+related to the business use of the home. If these expenses are greater than the gross income from
+the business use of the home, then you cannot take a deduction for this business use of the home.
+See Gross income limitation, later. 3. Take the smaller of the amounts from (1) and (2). This is the
+amount you can deduct for this qualified business use of your home using the simplified method. If
+you are a partner or you use your home in your farming business and file Schedule F (Form 1040),
+you can use the Simplified Method Worksheet, near the end of this publication, to help you figure
+your deduction. If you use your home in a trade or business and you file Schedule C (Form 1040),
+you will use the Simplified Method Worksheet in your Instructions for Schedule C to figure your
+deduction. Allowable area. In most cases, the allowable area is the smaller of the actual area (in
+square feet) of your home used in conducting the business and 300 square feet. Your allowable
+area may be smaller if you conducted the business as a qualified joint venture with your spouse,
+the area used by the business was shared with another qualified business use, you used the home
+for the business for only part of the year, or the area used by the business changed during the
+year. You can use the Area Adjustment Worksheet (for simplified method), near the end of this
+publication, to help you figure your allowable area for a qualified business use. Area used by a
+qualified joint venture. If the qualified business use of the home is also a qualified joint venture,
+you and your spouse will figure the deduction for the business use separately. Split the actual area
+used in conducting business between you and your spouse in the same manner you split your
+other tax attributes. Then each spouse will figure the allowable area separately. For more
+information about qualified joint ventures, see Qualified Joint Venture in the Instructions for
+Schedule C. Shared use. If you share your home with someone else who uses the home to
+conduct business that also qualifies for this deduction, you may not include the same square feet
+to figure your deduction as the other person. You must allocate the shared space between you
+and the other person in a reasonable manner. Example. Lindsey and Tracy are roommates.
+Lindsey uses 300 square feet of their home for a qualified business use. Tracy uses 200 square
+feet of their home for a separate qualified business use. Lindsey and Tracy both share 100 square
+feet for their respective qualified businesses in their mutual home. In addition to the portion that
+they do not share, Lindsey and Tracy can both claim 50 of the 100 square feet or divide the 100
+square feet between them in any reasonable manner. If divided evenly, Lindsey could claim 250
+square feet using the simplified method and Tracy could claim 150 square feet. More than one
+qualified business use. If you conduct more than one business qualifying for the deduction, you
+are limited to a maximum of 300 square feet for all of the businesses. Allocate the actual square
+footage used (up to the maximum of 300 square feet) among your qualified business uses in a
+reasonable manner. However, do not allocate more square feet to a qualified business use than
+you actually use for that business. Rental use. The simplified method does not apply to rental use.
+A rental use that qualifies for the deduction must be figured using actual expenses. If the rental
+use and a qualified business use share the same area, you will have to allocate the actual area
+used between the two uses. You cannot use the same area to figure a deduction for the qualified
+business use as you are using to figure the deduction for the rental use. Part-year use or area
+changes (for simplified method only). If your qualified business use was for a portion of the year
+(for example, a seasonal business, a business that begins during the year, or you moved during
+the year) or you changed the square footage of your qualified business use, your deduction is
+limited to the average monthly allowable square footage. You calculate the average monthly
+allowable square footage by adding the amount of allowable square feet you used in each month
+and dividing the sum by 12. When determining the average monthly allowable square footage,
+you cannot take more than 300 square feet into account for any 1 month. Additionally, if your
+qualified business use was less than 15 days in a month, you must use -0- for that month.
+11 Example 1. Jay owns a home and files federal income taxes on a
+calendar year basis. On July 20, Jay began using 420 square feet at the home for a qualified
+business use. Jay continued to use 420 square feet of the home until the end of the year. The
+average monthly allowable square footage is 125 square feet, which is figured using 300 square
+feet for each month, August through December, divided by the number of months in the year ((0 +
+0 + 0 + 0 + 0 + 0 + 0 + 300 + 300 + 300 + 300 + 300)/12). Example 2. Jessie owns a home and
+files federal income taxes on a calendar year basis. On April 20, Jessie began using 100 square
+feet of the home for a qualified business use. On August 5, Jessie expanded the area of qualified
+use to 330 square feet. Jessie continued to use the 330 square feet until the end of the year. The
+average monthly allowable square footage is 150 square feet, which is figured using 100 square
+feet for May through July and 300 square feet for August through December, divided by the
+number of months in the year ((0 + 0 + 0 + 0 + 100 + 100 +100 + 300 + 300 + 300 + 300 +
+300)/12). Example 3. Guadalupe owns a home and files federal income taxes on a calendar year
+basis. From January 1 through July 16, Guadalupe used 300 square feet of the home for a
+qualified business use. On July 17, Guadalupe moved to a new home and immediately began
+using 200 square feet for the same qualified business use. While preparing a 2025 tax return,
+Guadalupe decided to use the simplified method to deduct the qualified business use of the first
+home and files Form 8829 to deduct the qualified business use of the second home. The average
+monthly allowable square footage is 175 square feet, which is figured using 300 square feet for
+January through July, divided by the number of months in the year ((300 + 300 + 300 + 300 + 300
++ 300 + 300 + 0 + 0 + 0 + 0 + 0)/ 12). Caution: If you moved during the year, your average
+allowable square footage will generally be less than 300. Gross income limitation. Your deduction
+for business use of the home is limited to an amount equal to the gross income derived from the
+qualified business use of the home reduced by the business deductions that are unrelated to the
+use of your home. If the business deductions that are unrelated to the use of your home are
+greater than the gross income derived from the qualified business use of your home, then you
+cannot take a deduction for this qualified business use of your home. Business expenses not
+related to use of the home. These expenses relate to the business activity in the home, but not to
+the use of the home itself. You can still deduct business expenses that are unrelated to the use of
+the home. See Where To Deduct, later. Examples of business expenses that are unrelated to the
+use of the home are advertising, wages, supplies, dues, and depreciation for equipment. Space
+used regularly for daycare. If you do not use the area of your home exclusively for daycare, you
+must reduce the prescribed rate (maximum $5 per square foot) before figuring your deduction. The
+reduced rate will equal the prescribed rate times a fraction. The numerator of the fraction is the
+number of hours that the space was used during the year for daycare and the denominator is the
+total number of hours during the year that the space was available for all uses. You can use the
+Daycare Facility Worksheet (for simplified method), near the end of this publication, to help you
+figure the reduced rate. Tip: If you used at least 300 square feet for daycare regularly and
+exclusively during the year, then you do not need to reduce the prescribed rate or complete the
+Day care Facility Worksheet.

@@ -1,0 +1,69 @@
+Figuring the Deduction
+
+After you determine that you meet the tests under Qualifying for a Deduction, you can begin to
+figure how much you can deduct. When figuring the amount you can deduct for the business use
+of your home, you will use either your actual expenses or a simplified method. Electing to use the
+simplified method. The simplified method is an alternative to the calculation, allocation, and
+substantiation of actual expenses. You choose whether or not to figure your deduction using the
+simplified method each tax year. See Using the Simplified Method, later. 
+
+Using Actual Expenses 
+
+If you do not or cannot elect to use the simplified method for a home, you will figure your deduction
+for that home using your actual expenses. You will also need to figure the percentage of your
+home used for business and the limit on the deduction. If you are a partner or you use your home
+in your farming business and you file Schedule F (Form 1040), you can use the Worksheet To
+Figure the Deduction for Business Use of Your Home, near the end of this publication, to help you
+figure your deduction. If you use your home in a trade or business and you file Schedule C (Form
+1040), you will use Form 8829 to figure your deduction. 
+
+Actual Expenses 
+
+You must divide the
+expenses of operating your home between personal and business use. The part of a home
+operating expense you can use to figure your deduction depends on both of the following.
+•Whether the expense is direct, indirect, or unrelated. • The percentage of your home used for
+business. Table 1 describes the types of expenses you may have and the extent to which they are
+deductible.
+
+Table 1. Types of Expenses (IRS Publication 587)
+
+Direct expenses are expenses only for the business part of your home 
+(examples: painting or repairs only in the area used for business). 
+Direct expenses are deductible in full, except they may be only 
+partially deductible in a daycare facility.
+
+Indirect expenses are expenses for keeping up and running your entire 
+home (examples: insurance, utilities, and general repairs). Indirect 
+expenses are deductible based on the percentage of your home used for 
+business.
+
+Unrelated expenses are expenses only for the parts of your home not 
+used for business (examples: lawn care or painting a room not used 
+for business). Unrelated expenses are not deductible.
+
+Note: deductibility of direct and indirect expenses is subject to the 
+deduction limit, discussed later.
+
+Certain expenses are deductible to the extent they would have been deductible as an itemized
+deduction on your Schedule A or, if claiming the standard deduction, would have increased your
+standard deduction had you not used your home for business. If the expense is indirect, use the
+business percentage of these expenses to figure how much to include in your total
+business-use-of-the-home deduction. If you are itemizing your deductions on Schedule A (Form
+1040), these expenses include the following. • Real estate taxes. • Home mortgage interest. •
+Casualty losses attributable to a federally declared disaster. 
+If you are
+claiming the standard deduction, these expenses only include net qualified disaster losses that
+increase your standard deduction. See the Instructions for the Worksheet To Figure the Deduction
+for Business Use of Your Home, later in this publication, or the Instructions for Form 8829 for more
+information about figuring and deducting the business part of these otherwise allowable
+expenses. For more information about deducting real estate taxes, see Pub. 530. For more
+information about deducting home mortgage interest, see Pub. 936. For more information about
+deducting casualty losses, see Pub. 547. Other expenses are deductible only if you use your
+home for business. If the expense is indirect, use the business percentage of these expenses to
+figure how much to include in your total business-use-of-the-home deduction. These expenses
+generally include (but are not limited to) the following. • Casualty losses not attributable to a
+federally declared disaster. • Depreciation (discussed under Home, later). • Insurance
+•Rent paid for the use of property you do not own but use in your trade or
+business. • Repairs. • Security system. • Utilities and services. (But see Telephone, later, for
+different rules that apply to telephone expenses.)

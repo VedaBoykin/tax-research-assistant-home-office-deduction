@@ -1,0 +1,63 @@
+SECTION 1. PURPOSE
+
+This revenue procedure provides an optional safe harbor method that individual taxpayers may use to determine the amount of deductible expenses attributable to certain business use of a residence during the taxable year. This safe harbor method is an alternative to the calculation, allocation, and substantiation of actual expenses for purposes of satisfying the requirements of section 280A of the Internal Revenue Code. This revenue procedure is effective for taxable years beginning on or after January 1, 2013.
+
+SECTION 2. BACKGROUND
+
+.01 Section 280A(a) generally disallows any deduction for expenses related to a dwelling unit that is used as a residence by the taxpayer during the taxable year. However, section 280A(c)(1) through (4) allow a deduction for expenses related to certain business or rental use of a dwelling unit, subject to the deduction limitation in section 280A(c)(5).
+
+.02 Section 280A(c)(1) permits a taxpayer to deduct expenses that are allocable to a portion of the dwelling unit that is exclusively used on a regular basis (A) as the taxpayer's principal place of business for any trade or business, (B) as a place to meet with the taxpayer's patients, clients, or customers in the normal course of the taxpayer's trade or business, or (C) in the case of a separate structure that is not attached to the dwelling unit, in connection with the taxpayer's trade or business.
+
+.03 Section 280A(c)(2) permits a taxpayer to deduct expenses that are allocable to space within the dwelling unit used on a regular basis for the storage of inventory or product samples held for use in the taxpayer's trade or business of selling products at retail or wholesale, if the dwelling unit is the sole fixed location of the trade or business.
+
+.04 Section 280A(c)(3) permits a taxpayer to deduct expenses that are attributable to the rental of the dwelling unit or a portion of the dwelling unit.
+
+.05 Section 280A(c)(4) permits a taxpayer to deduct expenses that are allocable to the portion of the dwelling unit used on a regular basis in the taxpayer's trade or business of providing day care for children, for individuals who have attained age 65, or for individuals who are physically or mentally incapable of caring for themselves.
+
+.06 Section 280A(c)(5) limits the deductibility of expenses that relate to a use of a dwelling unit described in section 280A(c)(1) through (4) to the gross income derived from that use for the taxable year reduced by (1) the deductions allocable to the use that are allowable for the taxable year whether or not the unit is used as described in section 280A(c)(1) through (4) (for example, deductions for qualified residence interest, property taxes, and casualty losses); and (2) the allowable trade or business expenses that are not allocable to the use of the dwelling unit for the taxable year (for example, advertising, wages, and supplies).
+
+.07 The Internal Revenue Service (Service) and the Treasury Department recognize that the calculation, allocation, and substantiation of allowable deductions attributable to the use of a portion of the taxpayer's residence for business purposes can be complex and burdensome for small business owners. Accordingly, the Service and the Treasury Department are providing this optional safe harbor method to reduce the administrative, recordkeeping, and compliance burdens of determining the allowable deduction for certain business use of a residence under section 280A. Under this safe harbor method, taxpayers determine their allowable deduction for business use of a residence by multiplying a prescribed rate by the square footage of the portion of the taxpayer's residence that is used for business purposes.
+
+SECTION 3. SCOPE AND DEFINITIONS
+
+.01 In general. This revenue procedure applies to a taxpayer who is an individual and who elects the safe harbor method provided by this revenue procedure to determine the deduction allowable under section 280A for the taxpayer's qualified business use of a home for the taxable year.
+
+.02 Qualified business use. For purposes of this revenue procedure, "qualified business use" means (1) business use that satisfies the requirements of section 280A(c)(1), (2) business storage use that satisfies the requirements of section 280A(c)(2), or (3) day care services use that satisfies the requirements of section 280A(c)(4).
+
+.03 Home. For purposes of this revenue procedure, "home" means a dwelling unit used by the taxpayer during the taxable year as a residence, as defined in sections 280A(d) and (f)(1), including a dwelling unit leased by a taxpayer. However, only a dwelling unit that is section 1250 property (generally depreciable real property) and MACRS property (generally defined in section 1.168(b)-1(a)(2) as tangible, depreciable property subject to section 168 that is placed in service after December 31, 1986) qualifies as a home for purposes of this revenue procedure.
+
+SECTION 4. APPLICATION
+
+.01 Computation of the safe harbor amount.
+
+(1) A taxpayer determines the amount of deductible expenses for a qualified business use of the home for the taxable year under the safe harbor method by multiplying the allowable square footage by the prescribed rate.
+
+(2) The allowable square footage is the portion of a home used in a qualified business use of the home, but not to exceed 300 square feet.
+
+(3) The prescribed rate is $5.00. The Service and the Treasury Department may update this rate from time to time as warranted.
+
+(4) This safe harbor method is an alternative to the calculation and allocation of actual expenses otherwise required by section 280A. Accordingly, except as provided in section 4.04 of this revenue procedure, a taxpayer electing the safe harbor method for a taxable year cannot deduct any actual expenses related to the qualified business use of that home for that taxable year.
+
+.02 Reimbursement or other expense allowance arrangement. The safe harbor method provided by this revenue procedure does not apply to an employee with a home office if the employee receives advances, allowances, or reimbursements for expenses related to the qualified business use of the employee's home under a reimbursement or other expense allowance arrangement (as defined in section 1.62-2) with his or her employer.
+
+.03 Year-by-year determination. A taxpayer may elect from taxable year to taxable year whether to use the safe harbor method or to calculate and substantiate actual expenses for purposes of section 280A. A taxpayer elects the safe harbor method by using the method to compute the deduction for the qualified business use of a home on his or her timely filed, original federal income tax return for the taxable year. An election for any taxable year, once made, is irrevocable. A change from using the safe harbor method in one year to actual expenses in a succeeding taxable year, or vice-versa, is not a change in method of accounting and does not require the consent of the Commissioner.
+
+.04 Otherwise allowable deductions related to the home. A taxpayer who itemizes deductions and uses the safe harbor method for a taxable year may deduct, to the extent allowed by the Code and regulations, any expense related to the home that is deductible without regard to whether there is a qualified business use of the home for that taxable year (for example, deductions for qualified residence interest, property taxes, and casualty losses). Taxpayers using the safe harbor method deduct these expenses as itemized deductions on Form 1040, Schedule A, and cannot deduct any portion of these expenses from the gross income derived from the qualified business use of the home, either for purposes of determining the net income derived from the business or for purposes of determining the gross income limitation provided in section 4.08(2) of this revenue procedure. However, taxpayers with a qualified business use of a home who also have a rental use of the same home under section 280A(c)(3) must allocate a portion of the expenses described in this section 4.04 to the rental use to the extent required under section 280A and any regulations thereunder.
+
+.05 Business deductions unrelated to qualified business use of a home. A taxpayer using the safe harbor method for a taxable year may deduct, to the extent allowed by the Code and regulations, any trade or business expenses unrelated to the qualified business use of the home for that taxable year (for example, expenses for advertising, wages, and supplies).
+
+.08 Limitations.
+
+(1) Taxpayers using this safe harbor method to compute their deduction must continue to satisfy all requirements of section 280A for determining their eligibility to claim a deduction. For example, a taxpayer may claim a deduction for a business use described in section 280A(c)(1) for a portion of a residence only if that portion is exclusively used on a regular basis for business purposes. As a further example, a taxpayer who is an employee may deduct expenses attributable to a business use of a residence described in section 280A(c)(1) only if that use is for the convenience of the taxpayer's employer.
+
+(2) The amount of the deduction computed using the safe harbor method provided by this revenue procedure cannot exceed the gross income derived from the qualified business use of the home for the taxable year reduced by the business deductions described in section 4.05 of this revenue procedure (deductions unrelated to the qualified business use of a home). Any amount in excess of this gross income limitation is disallowed and may not be carried over and claimed as a deduction in any other taxable year.
+
+(3) A taxpayer who uses the safe harbor method provided by this revenue procedure for a taxable year may not deduct in that taxable year any disallowed amount carried over from a prior taxable year during which the taxpayer calculated and substantiated actual expenses for purposes of section 280A. A taxpayer who calculated and substantiated actual expenses for purposes of section 280A in a prior taxable year and whose deduction was limited by the gross income limitation in section 280A(c)(5) may deduct the disallowed amount, subject to all other applicable restrictions, in the next succeeding taxable year in which the taxpayer calculates and substantiates actual expenses for purposes of section 280A.
+
+(4) For purposes of determining the allowable square footage under section 4.01(2), a taxpayer with a qualified business use of a home for only part of the taxable year, or who changes the square footage used during the year, must determine the average monthly allowable square footage, capped at 300 square feet per month, counting only months with 15 or more days of qualified business use.
+
+(5) Taxpayers sharing a home (for example, roommates or spouses, regardless of filing status), if otherwise eligible, may each use the safe harbor method provided by this revenue procedure, but not for a qualified business use of the same portion of the home. For example, a husband and wife, if otherwise eligible and regardless of filing status, may each use the safe harbor method for a qualified business use of the same home for up to 300 square feet of different portions of the home.
+
+(6) A taxpayer who has more than one qualified business use of the same home for a taxable year and who elects the safe harbor method must use the safe harbor method for each qualified business use of the home. However, a taxpayer who has a qualified business use of a home and a rental use for purposes of section 280A(c)(3) of the same home cannot use the safe harbor method for the rental use. A taxpayer who has more than one qualified business use of the same home for a taxable year is limited to a maximum of 300 square feet. If a taxpayer who has more than one qualified business use of the same home for the taxable year uses more than 300 square feet, then the taxpayer must allocate the square footage among the qualified business uses of the home. The taxpayer may allocate the square footage in any reasonable manner, but the taxpayer may not allocate more square footage to a qualified business use of a home than is actually used in that qualified business use of the home.
+
+(7) A taxpayer with qualified business uses of more than one home for a taxable year may use the safe harbor method for only one home for that taxable year. However, the taxpayer, if otherwise eligible, may calculate and substantiate actual expenses for purposes of section 280A for the business use of any other homes for that taxable year.
