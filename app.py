@@ -120,7 +120,8 @@ def render_memo_with_inline_citations(answer_text, used_chunks):
             padding-left: 12px;
         }}
         .cite-panel.open {{ display: block; }}
-        .cite-source {{ margin-bottom: 8px; }}
+        .cite-source {{ margin-bottom: 10px; padding: 8px 0 8px 8px; background: #f8fafc; border-radius: 4px; }}
+        .cite-source + .cite-source {{ border-top: 1px solid #cbd5e1; padding-top: 10px; }}
         .cite-source-title {{ font-weight: 600; font-size: 0.9em; margin-bottom: 2px; }}
         .cite-score {{ font-weight: 400; color: #6b7280; font-size: 0.85em; }}
         .cite-source-text {{ font-size: 0.9em; color: #374151; white-space: pre-wrap; }}
@@ -140,7 +141,72 @@ def render_memo_with_inline_citations(answer_text, used_chunks):
         setTimeout(sendHeight, 100);
     </script>
     """
-    components.html(full_html, height=100, scrolling=False)
+    # Estimate a generous starting height from the actual content length so
+    # the box doesn't visibly clip before the resize script (best-effort;
+    # not guaranteed to fire in every browser/embedding context) has a
+    # chance to run. scrolling=True is the real safety net -- even if the
+    # estimate undershoots, nothing becomes permanently inaccessible.
+    estimated_height = max(250, min(2000, 180 + len(answer_text) // 3 + 90 * len(used_chunks)))
+    components.html(full_html, height=estimated_height, scrolling=True)
+
+
+def render_source_list(used_chunks):
+    """Renders all cited sources as a numbered, independently expandable
+    list beneath the answer -- a second, separate way to open the same
+    source text as the inline [n] markers (which stay as-is). Not linked
+    to the inline markers in any way; opening one here doesn't affect the
+    other and vice versa.
+    """
+    items = []
+    for i, c in enumerate(used_chunks, start=1):
+        marker_id = f"src-list-{i}"
+        items.append(
+            f'<li class="src-list-item">'
+            f'<span class="src-list-marker" onclick="toggleSrc(\'{marker_id}\')">'
+            f'[{i}] {html.escape(c["citation"])}</span>'
+            f'<div class="src-list-panel" id="{marker_id}">'
+            f'<div class="src-list-score">score {c.get("score", "n/a")}</div>'
+            f'<div class="src-list-text">{html.escape(c["text"])}</div>'
+            f'</div>'
+            f'</li>'
+        )
+
+    full_html = f"""
+    <style>
+        body {{ margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                font-size: 14px; color: #1f2937; }}
+        ul.src-list-root {{ list-style: none; padding: 0; margin: 0; }}
+        .src-list-item {{ margin-bottom: 4px; }}
+        .src-list-marker {{
+            display: inline-block; cursor: pointer; user-select: none;
+            font-weight: 500; color: #1f2937;
+        }}
+        .src-list-marker:hover {{ color: #1a73e8; }}
+        .src-list-panel {{
+            display: none; margin: 6px 0 10px 0; border-left: 3px solid #94a3b8;
+            padding-left: 12px;
+        }}
+        .src-list-panel.open {{ display: block; }}
+        .src-list-score {{ font-weight: 400; color: #6b7280; font-size: 0.85em; margin-bottom: 2px; }}
+        .src-list-text {{ font-size: 0.9em; color: #374151; white-space: pre-wrap; }}
+    </style>
+    <ul class="src-list-root">{"".join(items)}</ul>
+    <script>
+        function toggleSrc(id) {{
+            var el = document.getElementById(id);
+            el.classList.toggle('open');
+            sendHeight();
+        }}
+        function sendHeight() {{
+            var height = document.documentElement.scrollHeight;
+            window.parent.postMessage({{type: "streamlit:setFrameHeight", height: height}}, "*");
+        }}
+        window.addEventListener('load', sendHeight);
+        setTimeout(sendHeight, 100);
+    </script>
+    """
+    estimated_height = max(60, 46 * len(used_chunks) + 20)
+    components.html(full_html, height=estimated_height, scrolling=True)
 
 
 st.title("Home Office Deduction Research Assistant")
@@ -316,6 +382,10 @@ if result:
     st.subheader("Answer")
     render_memo_with_inline_citations(result["answer"], used_chunks)
 
+    if used_chunks:
+        st.caption("Sources cited (click to expand):")
+        render_source_list(used_chunks)
+
     st.divider()
 
     # --- Verification log table ---------------------------------------------
@@ -325,22 +395,22 @@ if result:
     if not claim_results:
         st.caption("No claims to verify.")
     else:
-        rows_html = ['<table style="width:100%;border-collapse:collapse;">']
+        rows_html = ['<table style="width:100%;border-collapse:collapse;font-size:0.82em;">']
         rows_html.append(
             '<tr style="text-align:left;border-bottom:1px solid #d0d7de;">'
-            '<th style="padding:6px 8px;">Status</th>'
-            '<th style="padding:6px 8px;">Claim</th>'
-            '<th style="padding:6px 8px;">Reasoning</th></tr>'
+            '<th style="padding:4px 6px;">Status</th>'
+            '<th style="padding:4px 6px;">Claim</th>'
+            '<th style="padding:4px 6px;">Reasoning</th></tr>'
         )
         for r in claim_results:
             color = LABEL_COLORS.get(r["label"], "#57606a")
             bg = LABEL_BG.get(r["label"], "#eaeef2")
             rows_html.append(
                 '<tr style="border-bottom:1px solid #eaeef2;">'
-                f'<td style="padding:6px 8px;white-space:nowrap;">'
-                f'<span style="background:{bg};color:{color};border-radius:4px;padding:2px 8px;font-weight:600;font-size:0.85em;">{r["label"]}</span></td>'
-                f'<td style="padding:6px 8px;">{r["claim"]}</td>'
-                f'<td style="padding:6px 8px;color:#57606a;">{r["reasoning"]}</td></tr>'
+                f'<td style="padding:4px 6px;white-space:nowrap;">'
+                f'<span style="background:{bg};color:{color};border-radius:4px;padding:1px 6px;font-weight:600;font-size:0.9em;">{r["label"]}</span></td>'
+                f'<td style="padding:4px 6px;">{r["claim"]}</td>'
+                f'<td style="padding:4px 6px;color:#57606a;">{r["reasoning"]}</td></tr>'
             )
         rows_html.append("</table>")
         st.markdown("".join(rows_html), unsafe_allow_html=True)
@@ -385,4 +455,4 @@ if result:
 
     if st.session_state.feedback:
         st.caption(f"Feedback recorded: {'👍 helpful' if st.session_state.feedback == 'up' else '👎 not helpful'}")
-        st.caption(f"Saved to `logs/interactions.jsonl` on this machine.")
+        st.caption("Logged to Google Sheets.")
