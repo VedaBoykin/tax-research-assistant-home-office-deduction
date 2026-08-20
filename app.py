@@ -146,67 +146,31 @@ def render_memo_with_inline_citations(answer_text, used_chunks):
     # not guaranteed to fire in every browser/embedding context) has a
     # chance to run. scrolling=True is the real safety net -- even if the
     # estimate undershoots, nothing becomes permanently inaccessible.
-    estimated_height = max(250, min(2000, 180 + len(answer_text) // 3 + 90 * len(used_chunks)))
+    # Estimate height from the CLOSED-state content only -- citation panels
+    # are display:none until clicked, so they contribute zero height at
+    # render time. (Earlier version wrongly assumed every panel was already
+    # open, which is why the box was rendering with far too much blank
+    # space.) scrolling=True stays on as a fallback for when someone opens
+    # enough panels to exceed this estimate.
+    estimated_height = max(150, min(900, 80 + len(answer_text) // 4))
     components.html(full_html, height=estimated_height, scrolling=True)
 
 
 def render_source_list(used_chunks):
-    """Renders all cited sources as a numbered, independently expandable
-    list beneath the answer -- a second, separate way to open the same
-    source text as the inline [n] markers (which stay as-is). Not linked
-    to the inline markers in any way; opening one here doesn't affect the
-    other and vice versa.
+    """Renders all cited sources as a row of side-by-side, independently
+    clickable boxes beneath the answer -- a second, separate way to open
+    the same source text as the inline [n] markers (which stay as-is).
+    Native Streamlit widgets (columns + popover), not custom HTML, so
+    sizing is handled by Streamlit itself rather than needing a manual
+    height estimate.
     """
-    items = []
-    for i, c in enumerate(used_chunks, start=1):
-        marker_id = f"src-list-{i}"
-        items.append(
-            f'<li class="src-list-item">'
-            f'<span class="src-list-marker" onclick="toggleSrc(\'{marker_id}\')">'
-            f'[{i}] {html.escape(c["citation"])}</span>'
-            f'<div class="src-list-panel" id="{marker_id}">'
-            f'<div class="src-list-score">score {c.get("score", "n/a")}</div>'
-            f'<div class="src-list-text">{html.escape(c["text"])}</div>'
-            f'</div>'
-            f'</li>'
-        )
-
-    full_html = f"""
-    <style>
-        body {{ margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-                font-size: 14px; color: #1f2937; }}
-        ul.src-list-root {{ list-style: none; padding: 0; margin: 0; }}
-        .src-list-item {{ margin-bottom: 4px; }}
-        .src-list-marker {{
-            display: inline-block; cursor: pointer; user-select: none;
-            font-weight: 500; color: #1f2937;
-        }}
-        .src-list-marker:hover {{ color: #1a73e8; }}
-        .src-list-panel {{
-            display: none; margin: 6px 0 10px 0; border-left: 3px solid #94a3b8;
-            padding-left: 12px;
-        }}
-        .src-list-panel.open {{ display: block; }}
-        .src-list-score {{ font-weight: 400; color: #6b7280; font-size: 0.85em; margin-bottom: 2px; }}
-        .src-list-text {{ font-size: 0.9em; color: #374151; white-space: pre-wrap; }}
-    </style>
-    <ul class="src-list-root">{"".join(items)}</ul>
-    <script>
-        function toggleSrc(id) {{
-            var el = document.getElementById(id);
-            el.classList.toggle('open');
-            sendHeight();
-        }}
-        function sendHeight() {{
-            var height = document.documentElement.scrollHeight;
-            window.parent.postMessage({{type: "streamlit:setFrameHeight", height: height}}, "*");
-        }}
-        window.addEventListener('load', sendHeight);
-        setTimeout(sendHeight, 100);
-    </script>
-    """
-    estimated_height = max(60, 46 * len(used_chunks) + 20)
-    components.html(full_html, height=estimated_height, scrolling=True)
+    cols = st.columns(min(len(used_chunks), 6) or 1)
+    for i, chunk in enumerate(used_chunks, start=1):
+        with cols[(i - 1) % len(cols)]:
+            with st.popover(f"[{i}] {chunk['citation']}"):
+                st.markdown(f"**{chunk['citation']}**")
+                st.caption(f"Retrieval score: {chunk.get('score', 'n/a')}")
+                st.write(chunk["text"])
 
 
 st.title("Home Office Deduction Research Assistant")
