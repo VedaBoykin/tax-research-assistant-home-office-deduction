@@ -173,6 +173,17 @@ except FileNotFoundError as e:
     )
     st.stop()
 
+# Re-sync pipeline.py's module-level embedder/all_chunks/chunk_embeddings from
+# the cached corpus on every rerun. get_corpus() only re-runs load_corpus()
+# once per process (that's the expensive, cached part) -- but the retrieval
+# functions in pipeline.py depend on those three names as live module
+# globals, and that global state doesn't reliably survive every Streamlit
+# rerun on its own. This keeps them in sync cheaply (no re-embedding) so a
+# button click never sees a stale/reset embedder.
+pipeline.embedder = corpus_info["embedder"]
+pipeline.all_chunks = corpus_info["all_chunks"]
+pipeline.chunk_embeddings = corpus_info["chunk_embeddings"]
+
 with st.sidebar:
     st.subheader("Sources in this corpus")
 
