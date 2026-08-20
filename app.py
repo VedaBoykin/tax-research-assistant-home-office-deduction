@@ -174,6 +174,36 @@ def render_source_list(used_chunks):
                 st.write(chunk["text"])
 
 
+def render_checklist(claim_results, query_id):
+    """Renders the same claim_results data used by the verification log as
+    a self/client-facing qualification checklist instead -- no new model
+    call, just a different view of data the pipeline already produced.
+    Verified claims become checkable items (with a caution/flag marker if
+    they were only partially supported or unsupported, so someone working
+    through the checklist still sees that a claim carries less certainty).
+    Decline-labeled claims (meta-statements about missing information) are
+    pulled into a separate "Open items" section rather than mixed in as
+    checkboxes, since they're not a yes/no criterion.
+    """
+    action_items = [r for r in claim_results if r["label"] != "DECLINE"]
+    open_items = [r for r in claim_results if r["label"] == "DECLINE"]
+
+    if not action_items and not open_items:
+        st.caption("No claims to show as a checklist.")
+        return
+
+    icon = {"PARTIALLY SUPPORTED": "\u26a0\ufe0f ", "UNSUPPORTED": "\U0001f6a9 "}
+    for i, r in enumerate(action_items):
+        label_text = f"{icon.get(r['label'], '')}{r['claim']}"
+        st.checkbox(label_text, key=f"checklist_{query_id}_{i}")
+
+    if open_items:
+        st.markdown("---")
+        st.markdown("**Open items — not addressed by the sources:**")
+        for r in open_items:
+            st.markdown(f"- \u26a0\ufe0f {r['claim']}")
+
+
 st.title("Home Office Deduction Research Assistant")
 st.caption("IRC Section 280A — eligibility and simplified vs. actual expense method questions")
 
@@ -293,6 +323,7 @@ run_clicked = st.button("Research", type="primary", disabled=not question.strip(
 if run_clicked:
     st.session_state.question = question
     st.session_state.feedback = None
+    st.session_state.view_mode = "answer"
 
     status_box = st.status("Starting research...", expanded=True)
 
@@ -356,12 +387,30 @@ if result:
     # directly beneath the sentence it's in (not a separate control
     # elsewhere on the page). Needs raw HTML/JS since Streamlit's native
     # widgets can't be embedded inside a run of text.
-    st.subheader("Answer")
-    render_memo_with_inline_citations(result["answer"], used_chunks)
+    if "view_mode" not in st.session_state:
+        st.session_state.view_mode = "answer"
 
-    if used_chunks:
-        st.caption("Sources cited (click to expand):")
-        render_source_list(used_chunks)
+    toggle_col, _ = st.columns([1, 4])
+    with toggle_col:
+        if st.session_state.view_mode == "answer":
+            if st.button("View as checklist"):
+                st.session_state.view_mode = "checklist"
+                st.rerun()
+        else:
+            if st.button("View as answer"):
+                st.session_state.view_mode = "answer"
+                st.rerun()
+
+    st.subheader("Answer" if st.session_state.view_mode == "answer" else "Checklist")
+
+    if st.session_state.view_mode == "answer":
+        render_memo_with_inline_citations(result["answer"], used_chunks)
+
+        if used_chunks:
+            st.caption("Sources cited (click to expand):")
+            render_source_list(used_chunks)
+    else:
+        render_checklist(result["claim_results"], st.session_state.query_id)
 
     st.divider()
 
