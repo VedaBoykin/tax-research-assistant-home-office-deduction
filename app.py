@@ -174,9 +174,42 @@ except FileNotFoundError as e:
     st.stop()
 
 with st.sidebar:
-    st.subheader("Corpus")
-    st.write(f"{corpus_info['n_sources']} sources, {corpus_info['n_chunks']} chunks")
-    st.caption("Cached at process start via st.cache_resource — not re-embedded per page load.")
+    st.subheader("Sources in this corpus")
+
+    sidebar_html = f"""
+    <style>
+        .src-list {{ list-style: disc; padding-left: 18px; margin: 0; line-height: 1.9; }}
+        .src-top {{ font-weight: 600; font-size: 16px; }}
+        .src-top a {{ color: #1a73e8; text-decoration: underline; }}
+        .src-sub {{ list-style: none; padding-left: 14px; margin: 2px 0 0; }}
+        .src-sub li a {{ color: #1a73e8; text-decoration: underline; font-size: 13px; }}
+        .src-caption {{ font-size: 12px; color: #6b7280; margin: 12px 0 0; }}
+    </style>
+    <ul class="src-list">
+        <li class="src-top"><a href="https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title26-section280A&num=0&edition=prelim" target="_blank">IRC S 280A</a></li>
+        <li class="src-top">
+            Prop. Treas. Reg. S 1.280A-2
+            <ul class="src-sub">
+                <li><a href="https://www.taxnotes.com/research/federal/proposed-regulations/proposed-regs-on-deductions-for-business-use-or-rental-of/1r3c8" target="_blank">Original text</a></li>
+                <li><a href="https://www.taxnotes.com/research/federal/proposed-regulations/proposed-regulation-affects-deductions-of-expenses-for-business-use-or/1r38k" target="_blank">Amendment</a></li>
+            </ul>
+        </li>
+        <li class="src-top"><a href="https://www.irs.gov/irb/2013-06_IRB#RP-2013-13" target="_blank">Rev. Proc. 2013-13</a></li>
+        <li class="src-top">
+            <a href="https://www.irs.gov/publications/p587#en_US_2025_publink1000283" target="_blank">IRS Pub. 587</a>
+            <ul class="src-sub">
+                <li><a href="https://www.irs.gov/publications/p587#en_US_2025_publink1000226296" target="_blank">Qualifying for the Deduction</a></li>
+                <li><a href="https://www.irs.gov/publications/p587#en_US_2025_publink1000283" target="_blank">Figuring the Deduction (Method Choice)</a></li>
+                <li><a href="https://www.irs.gov/publications/p587#en_US_2025_publink1000390" target="_blank">Simplified Method</a></li>
+                <li><a href="https://www.irs.gov/publications/p587#en_US_2025_publink1000226361" target="_blank">Daycare Facility Test</a></li>
+                <li><a href="https://www.irs.gov/publications/p587#en_US_2025_publink1000226304" target="_blank">Employee Use</a></li>
+            </ul>
+        </li>
+        <li class="src-top"><a href="https://www.law.cornell.edu/supct/html/91-998.ZO.html" target="_blank">Comm'r v. Soliman</a></li>
+    </ul>
+    <p class="src-caption">{corpus_info['n_sources']} sources, {corpus_info['n_chunks']} chunks — cached at process start via st.cache_resource, not re-embedded per page load.</p>
+    """
+    st.markdown(sidebar_html, unsafe_allow_html=True)
 
 # ---------------------------------------------------------------------------
 # Session state
