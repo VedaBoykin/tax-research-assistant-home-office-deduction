@@ -171,13 +171,13 @@ source_titles = {
 citation_labels = {
     "280A_statute": "IRC Section 280A",
     "prop_reg_280A2": "Prop. Treas. Reg. Section 1.280A-2",
-    "pub587_qualifying": "Pub. 587 (Qualifying Tests)",
-    "pub587_method_choice": "Pub. 587 (Figuring the Deduction)",
-    "pub587_simplified_method": "Pub. 587 (Simplified Method)",
+    "pub587_qualifying": "IRS Pub. 587 (Qualifying for the Deduction)",
+    "pub587_method_choice": "IRS Pub. 587 (Figuring the Deduction)",
+    "pub587_simplified_method": "IRS Pub. 587 (Simplified Method)",
     "rev_proc_2013-13": "Rev. Proc. 2013-13",
     "soliman": "Commissioner v. Soliman, 506 U.S. 168 (1993)",
-    "pub587_daycare": "Pub. 587 (Daycare Facility Test)",
-    "pub587_employee_use": "Pub. 587 (Employee Use)",
+    "pub587_daycare": "IRS Pub. 587 (Daycare Facility Test)",
+    "pub587_employee_use": "IRS Pub. 587 (Employee Use)",
 }
 
 # Which underlying legal/guidance document each registry entry belongs to.

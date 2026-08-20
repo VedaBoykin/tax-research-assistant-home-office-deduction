@@ -388,7 +388,7 @@ if result:
 
             if step["retry_feedback_used"]:
                 st.caption("Revision requested based on:")
-                st.code(step["retry_feedback_used"], language=None)
+                st.markdown(step["retry_feedback_used"])
 
             st.markdown("*Retrieved excerpts:*")
             for i, c in enumerate(step["used_chunks"]):
