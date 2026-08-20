@@ -174,16 +174,63 @@ def render_source_list(used_chunks):
                 st.write(chunk["text"])
 
 
+def _classify_claim_for_checklist(claim_text):
+    """Sorts a claim into the step of Pub. 587's Figure A ("Can You Deduct
+    Business Use of the Home Expenses?") decision flow it corresponds to,
+    based on keyword matching -- not model interpretation. This is
+    deliberately literal: it matches against Figure A's own gates (employee
+    status; the qualifying-use tests: principal place of business, meeting
+    clients, separate structure, storage/rental/daycare) plus a
+    calculation-stage bucket for anything about dividing/allocating
+    expenses once eligibility is established. A claim that doesn't match
+    any of these falls into "other" rather than being forced into a step
+    it doesn't belong to.
+    """
+    t = claim_text.lower()
+
+    if "employee" in t:
+        return "employee"
+
+    qualifying_keywords = [
+        "principal place of business", "clients", "customers", "patients",
+        "separate structure", "storage", "daycare", "rental use",
+        "exclusively and regularly", "exclusive and regular",
+    ]
+    if any(k in t for k in qualifying_keywords):
+        return "qualifying"
+
+    calculation_keywords = [
+        "indirect expense", "direct expense", "unrelated expense",
+        "simplified method", "regular method", "actual expense",
+        "percentage of", "square footage", "square feet",
+        "allocate", "deduction amount", "depreciation",
+    ]
+    if any(k in t for k in calculation_keywords):
+        return "calculation"
+
+    return "other"
+
+
+_CHECKLIST_STEPS = [
+    ("employee", "Confirm employment status", None),
+    ("qualifying", "Confirm the space qualifies (must meet at least one)",
+     "Only one of these needs to be true — but the space must still be used "
+     "exclusively and regularly for whichever one applies."),
+    ("calculation", "If eligible, calculating the deduction", None),
+]
+
+
 def render_checklist(claim_results, query_id):
     """Renders the same claim_results data used by the verification log as
     a self/client-facing qualification checklist instead -- no new model
     call, just a different view of data the pipeline already produced.
-    Verified claims become checkable items (with a caution/flag marker if
-    they were only partially supported or unsupported, so someone working
-    through the checklist still sees that a claim carries less certainty).
-    Decline-labeled claims (meta-statements about missing information) are
-    pulled into a separate "Open items" section rather than mixed in as
-    checkboxes, since they're not a yes/no criterion.
+    Claims are grouped into steps following the decision order of Pub.
+    587's own Figure A flowchart (employee status -> qualifying-use tests
+    -> deduction calculation), rather than a flat list. Verified claims
+    become checkable items, with a caution/flag marker if they were only
+    partially supported or unsupported. Decline-labeled claims (meta-
+    statements about missing information) go in a separate "Open items"
+    section, since they're not a yes/no criterion.
     """
     action_items = [r for r in claim_results if r["label"] != "DECLINE"]
     open_items = [r for r in claim_results if r["label"] == "DECLINE"]
@@ -192,14 +239,38 @@ def render_checklist(claim_results, query_id):
         st.caption("No claims to show as a checklist.")
         return
 
+    grouped = {"employee": [], "qualifying": [], "calculation": [], "other": []}
+    for r in action_items:
+        grouped[_classify_claim_for_checklist(r["claim"])].append(r)
+
     icon = {"PARTIALLY SUPPORTED": "\u26a0\ufe0f ", "UNSUPPORTED": "\U0001f6a9 "}
-    for i, r in enumerate(action_items):
-        label_text = f"{icon.get(r['label'], '')}{r['claim']}"
-        st.checkbox(label_text, key=f"checklist_{query_id}_{i}")
+    checkbox_idx = 0
+    step_num = 0
+
+    for key, title, note in _CHECKLIST_STEPS:
+        items = grouped[key]
+        if not items:
+            continue
+        step_num += 1
+        st.markdown(f"**Step {step_num}: {title}**")
+        if note:
+            st.caption(note)
+        for r in items:
+            label_text = f"{icon.get(r['label'], '')}{r['claim']}"
+            st.checkbox(label_text, key=f"checklist_{query_id}_{checkbox_idx}")
+            checkbox_idx += 1
+        st.markdown("")
+
+    if grouped["other"]:
+        st.markdown("**Additional considerations**")
+        for r in grouped["other"]:
+            label_text = f"{icon.get(r['label'], '')}{r['claim']}"
+            st.checkbox(label_text, key=f"checklist_{query_id}_{checkbox_idx}")
+            checkbox_idx += 1
 
     if open_items:
         st.markdown("---")
-        st.markdown("**Open items — not addressed by the sources:**")
+        st.markdown("**Open items — not addressed by the sources, need follow-up:**")
         for r in open_items:
             st.markdown(f"- \u26a0\ufe0f {r['claim']}")
 
