@@ -169,8 +169,8 @@ source_titles = {
 }
 
 citation_labels = {
-    "280A_statute": "IRC S280A",
-    "prop_reg_280A2": "Prop. Treas. Reg. S1.280A-2",
+    "280A_statute": "IRC Section 280A",
+    "prop_reg_280A2": "Prop. Treas. Reg. Section 1.280A-2",
     "pub587_qualifying": "Pub. 587 (Qualifying Tests)",
     "pub587_method_choice": "Pub. 587 (Figuring the Deduction)",
     "pub587_simplified_method": "Pub. 587 (Simplified Method)",
