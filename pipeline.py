@@ -51,11 +51,6 @@ MODEL_NAME = "gemini-3.1-flash-lite"
 # next to this module.
 CORPUS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "corpus")
 
-# Local, append-only interaction log. Each user gets their own log file on
-# their own machine when they run the app -- nothing is sent anywhere.
-LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
-LOG_PATH = os.path.join(LOG_DIR, "interactions.jsonl")
-
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
@@ -149,13 +144,25 @@ files = {
     "pub587_employee_use": "pub587_employee_use_clean.txt",
 }
 
+# Retrieval fix carried over from the notebook (recall@5 82% -> 91%, zero
+# regressions on the rest of the gold set): only 280A_statute and
+# rev_proc_2013-13 got more specific embedding prefixes; the rest are
+# unchanged.
 source_titles = {
-    "280A_statute": "IRC S280A - Disallowance of Certain Expenses in Connection with Business Use of Home",
+    "280A_statute": (
+        "IRC S280A - Disallowance of Certain Expenses in Connection with "
+        "Business Use of Home; the regular use, exclusive use, and principal "
+        "place of business tests that determine eligibility"
+    ),
     "prop_reg_280A2": "Proposed Treasury Regulation S1.280A-2 - Business Use of a Dwelling Unit",
     "pub587_qualifying": "IRS Publication 587 - Qualifying for the Home Office Deduction",
     "pub587_method_choice": "IRS Publication 587 - Figuring the Home Office Deduction",
     "pub587_simplified_method": "IRS Publication 587 - Simplified Method",
-    "rev_proc_2013-13": "Revenue Procedure 2013-13 - Simplified Method Safe Harbor",
+    "rev_proc_2013-13": (
+        "Revenue Procedure 2013-13 - requirements and mechanics for electing "
+        "the simplified method, including how the election is made on a tax "
+        "return and its irrevocability for the taxable year"
+    ),
     "soliman": "Commissioner v. Soliman, 506 U.S. 168 (1993)",
     "pub587_daycare": "IRS Publication 587 - Daycare Facility Qualifying Test",
     "pub587_employee_use": "IRS Publication 587 - Employee Use (Figure A)",
@@ -171,6 +178,23 @@ citation_labels = {
     "soliman": "Commissioner v. Soliman, 506 U.S. 168 (1993)",
     "pub587_daycare": "Pub. 587 (Daycare Facility Test)",
     "pub587_employee_use": "Pub. 587 (Employee Use)",
+}
+
+# Which underlying legal/guidance document each registry entry belongs to.
+# `files` has 9 entries because Pub 587 is split into 5 pieces for
+# retrieval/citation granularity -- but that's still only 5 underlying
+# documents (statute, proposed reg, Pub 587, Rev. Proc. 2013-13, Soliman),
+# per the proposal. Used to report the accurate document count in the UI.
+DOCUMENT_GROUPS = {
+    "280A_statute": "IRC S280A",
+    "prop_reg_280A2": "Prop. Treas. Reg. S1.280A-2",
+    "pub587_qualifying": "IRS Publication 587",
+    "pub587_method_choice": "IRS Publication 587",
+    "pub587_simplified_method": "IRS Publication 587",
+    "pub587_daycare": "IRS Publication 587",
+    "pub587_employee_use": "IRS Publication 587",
+    "rev_proc_2013-13": "Rev. Proc. 2013-13",
+    "soliman": "Commissioner v. Soliman, 506 U.S. 168 (1993)",
 }
 
 AUTHORITATIVE_SOURCES = set(files.keys())
@@ -235,7 +259,7 @@ def load_corpus(corpus_dir=None):
         "all_chunks": all_chunks,
         "chunk_embeddings": chunk_embeddings,
         "n_chunks": len(all_chunks),
-        "n_sources": len(files),
+        "n_sources": len(set(DOCUMENT_GROUPS.values())),
     }
 
 
@@ -688,43 +712,124 @@ def orchestrate_answer(question, max_retries=1, unsupported_threshold=0.25, top_
 
 
 # ---------------------------------------------------------------------------
-# Local interaction logging
+# Google Sheets logging
 #
-# Appends one JSON object per line to logs/interactions.jsonl, next to this
-# module, on whatever machine the app is running on. Two event types share a
-# query_id so a later thumbs vote can be joined back to the query it's
-# about: "query" (written once, when orchestrate_answer finishes) and
-# "feedback" (written when the user clicks thumbs up/down).
+# Replaces the earlier local-file logging entirely -- this is the one
+# logging path for the deployed app, so it survives Streamlit Cloud
+# restarts instead of living in an ephemeral local file.
+#
+# Two worksheets in the same Google Sheet, joined by a shared query_id:
+#
+#   "queries"  -- one row per completed orchestrate_answer() call, with the
+#                 full per-attempt draft/citation-outcome detail per the
+#                 proposal's logging requirement ("Every pipeline run will
+#                 log the original draft memo, the Verification Agent's
+#                 outcome per citation, and the corrected memo, if a retry
+#                 was triggered.")
+#   "feedback" -- one row per thumbs up/down vote, referencing query_id.
+#
+# Requires two secrets (set the same way as GEMINI_API_KEY, in Streamlit's
+# Secrets manager or a local .streamlit/secrets.toml):
+#   - GOOGLE_SHEET_ID: the sheet's ID from its URL
+#   - [gcp_service_account]: the full contents of the service-account JSON
+#     key, as a TOML table
 # ---------------------------------------------------------------------------
 
-def _append_log(record):
-    os.makedirs(LOG_DIR, exist_ok=True)
-    with open(LOG_PATH, "a", encoding="utf-8") as f:
-        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+QUERIES_HEADER = [
+    "timestamp", "query_id", "question", "status", "attempts", "answer",
+    "supported", "partially_supported", "unsupported", "decline",
+    "attempt_history_json",
+]
+FEEDBACK_HEADER = ["timestamp", "query_id", "feedback"]
+
+
+def _get_sheet():
+    """Returns an authorized gspread Spreadsheet handle, or None if the
+    secrets aren't configured (so logging can fail quietly rather than
+    crash the app for a demo where logging is secondary to the pipeline
+    itself)."""
+    try:
+        import streamlit as st
+        import gspread
+        from google.oauth2.service_account import Credentials
+
+        scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+        creds = Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"], scopes=scopes
+        )
+        gc = gspread.authorize(creds)
+        return gc.open_by_key(st.secrets["GOOGLE_SHEET_ID"])
+    except Exception as e:
+        print(f"  WARNING: could not connect to Google Sheets logging: {e}")
+        return None
+
+
+def _get_or_create_worksheet(sheet, title, header):
+    try:
+        ws = sheet.worksheet(title)
+    except Exception:
+        ws = sheet.add_worksheet(title=title, rows=1000, cols=len(header))
+        ws.append_row(header)
+    return ws
 
 
 def log_query(question, result):
-    """Logs a completed orchestrate_answer() call. Returns a query_id to
-    pass to log_feedback() later if the user votes on this answer."""
+    """Logs a completed orchestrate_answer() call to the "queries"
+    worksheet. Returns a query_id to pass to log_feedback() later if the
+    user votes on this answer. Returns None (and prints a warning) if
+    Sheets logging isn't configured or the write fails -- this should
+    never block the app from showing the answer it already has."""
     query_id = str(uuid.uuid4())
-    _append_log({
-        "event": "query",
-        "query_id": query_id,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "question": question,
-        "status": result["status"],
-        "attempts": result["attempts"],
-        "answer": result["answer"],
-        "summary": result["summary"],
-    })
+    sheet = _get_sheet()
+    if sheet is None:
+        return query_id  # still usable for in-session feedback linking
+
+    try:
+        ws = _get_or_create_worksheet(sheet, "queries", QUERIES_HEADER)
+        summary = result["summary"]
+        ws.append_row([
+            datetime.now(timezone.utc).isoformat(),
+            query_id,
+            question,
+            result["status"],
+            result["attempts"],
+            result["answer"],
+            summary["supported"],
+            summary["partially_supported"],
+            summary["unsupported"],
+            summary["decline"],
+            json.dumps([
+                {
+                    "attempt": a["attempt"],
+                    "retry_feedback_used": a["retry_feedback_used"],
+                    "draft_answer": a["draft_answer"],
+                    "used_chunks": [c["citation"] for c in a["used_chunks"]],
+                    "citation_outcomes": [
+                        {"claim": c["claim"], "label": c["label"], "reasoning": c["reasoning"]}
+                        for c in a["claim_results"]
+                    ],
+                }
+                for a in result["trace"]
+            ], ensure_ascii=False),
+        ], value_input_option="RAW")
+    except Exception as e:
+        print(f"  WARNING: failed to log query to Google Sheets: {e}")
+
     return query_id
 
 
 def log_feedback(query_id, feedback):
     """feedback: 'up' or 'down'."""
-    _append_log({
-        "event": "feedback",
-        "query_id": query_id,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "feedback": feedback,
-    })
+    sheet = _get_sheet()
+    if sheet is None:
+        return
+
+    try:
+        ws = _get_or_create_worksheet(sheet, "feedback", FEEDBACK_HEADER)
+        ws.append_row([
+            datetime.now(timezone.utc).isoformat(),
+            query_id,
+            feedback,
+        ], value_input_option="RAW")
+    except Exception as e:
+        print(f"  WARNING: failed to log feedback to Google Sheets: {e}")

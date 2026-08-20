@@ -13,9 +13,11 @@ corpus/ folder next to this file containing the cleaned *_clean.txt source
 files pipeline.py's `files` registry expects.
 """
 
+import html
 import re
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 import pipeline
 
@@ -39,6 +41,107 @@ LABEL_BG = {
     "DECLINE": "#eaeef2",
     "PARSE_ERROR": "#eaeef2",
 }
+
+def _memo_markdown_to_html(text):
+    """Minimal markdown -> HTML for the memo: **bold** and "- " bullet
+    lists, paragraph breaks on blank lines. Escapes everything else first
+    so source/model text can't inject stray HTML."""
+    blocks = re.split(r'\n\s*\n', text.strip())
+    html_blocks = []
+    for block in blocks:
+        lines = [l.strip() for l in block.split("\n") if l.strip()]
+        is_list = all(l.startswith(("- ", "* ")) and not l.startswith("**") for l in lines)
+        if is_list:
+            items = "".join(f"<li>{html.escape(l[2:].strip())}</li>" for l in lines)
+            html_blocks.append(f"<ul>{items}</ul>")
+        else:
+            html_blocks.append(f"<p>{html.escape(' '.join(lines))}</p>")
+    joined = "\n".join(html_blocks)
+    # Restore **bold** after escaping (escape turns nothing relevant here,
+    # so this is safe to run post-escape).
+    joined = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', joined)
+    return joined
+
+
+def render_memo_with_inline_citations(answer_text, used_chunks):
+    """Renders the memo as HTML where each [n] / [n, m] marker is clickable
+    right where it sits in the text, expanding a panel with the cited
+    source excerpt(s) directly beneath that point -- not a separate control
+    elsewhere on the page. Streamlit's native widgets can't be embedded
+    inside a run of text, so this is a self-contained HTML/JS component
+    instead of markdown + st.popover.
+    """
+    body_html = _memo_markdown_to_html(answer_text)
+
+    counter = {"n": 0}
+
+    def _make_marker(match):
+        nums = [int(x.strip()) for x in match.group(1).split(",")]
+        counter["n"] += 1
+        marker_id = f"cite-{counter['n']}"
+        label = ",".join(str(n) for n in nums)
+
+        panels = []
+        for n in nums:
+            if 1 <= n <= len(used_chunks):
+                c = used_chunks[n - 1]
+                panels.append(
+                    f'<div class="cite-source">'
+                    f'<div class="cite-source-title">[{n}] {html.escape(c["citation"])}'
+                    f' <span class="cite-score">score {c.get("score", "n/a")}</span></div>'
+                    f'<div class="cite-source-text">{html.escape(c["text"])}</div>'
+                    f'</div>'
+                )
+            else:
+                panels.append(f'<div class="cite-source">[{n}] (source not found)</div>')
+
+        return (
+            f'<span class="cite-marker" onclick="toggleCite(\'{marker_id}\')">[{label}]</span>'
+            f'<div class="cite-panel" id="{marker_id}">{"".join(panels)}</div>'
+        )
+
+    body_html = re.sub(r'\[([\d,\s]+)\]', _make_marker, body_html)
+
+    full_html = f"""
+    <style>
+        body {{ margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                font-size: 15px; line-height: 1.6; color: #1f2937; }}
+        p {{ margin: 0 0 12px 0; }}
+        ul {{ margin: 0 0 12px 0; padding-left: 22px; }}
+        li {{ margin-bottom: 6px; }}
+        .cite-marker {{
+            display: inline-block; background: #eef1f4; border-radius: 4px;
+            padding: 1px 6px; font-size: 0.85em; font-weight: 600;
+            color: #1f2937; cursor: pointer; user-select: none;
+        }}
+        .cite-marker:hover {{ background: #dbe4ee; }}
+        .cite-panel {{
+            display: none; margin: 6px 0 14px 0; border-left: 3px solid #94a3b8;
+            padding-left: 12px;
+        }}
+        .cite-panel.open {{ display: block; }}
+        .cite-source {{ margin-bottom: 8px; }}
+        .cite-source-title {{ font-weight: 600; font-size: 0.9em; margin-bottom: 2px; }}
+        .cite-score {{ font-weight: 400; color: #6b7280; font-size: 0.85em; }}
+        .cite-source-text {{ font-size: 0.9em; color: #374151; white-space: pre-wrap; }}
+    </style>
+    <div id="memo-root">{body_html}</div>
+    <script>
+        function toggleCite(id) {{
+            var el = document.getElementById(id);
+            el.classList.toggle('open');
+            sendHeight();
+        }}
+        function sendHeight() {{
+            var height = document.documentElement.scrollHeight;
+            window.parent.postMessage({{type: "streamlit:setFrameHeight", height: height}}, "*");
+        }}
+        window.addEventListener('load', sendHeight);
+        setTimeout(sendHeight, 100);
+    </script>
+    """
+    components.html(full_html, height=100, scrolling=False)
+
 
 st.title("Home Office Deduction Research Assistant")
 st.caption("IRC S280A — eligibility and simplified vs. actual expense method questions")
@@ -161,25 +264,13 @@ if result:
 
     st.divider()
 
-    # --- Memo with inline citation badges -----------------------------------
+    # --- Memo with true inline citation pop-outs -----------------------------
+    # Each [n] is a clickable marker; clicking it opens the source excerpt
+    # directly beneath the sentence it's in (not a separate control
+    # elsewhere on the page). Needs raw HTML/JS since Streamlit's native
+    # widgets can't be embedded inside a run of text.
     st.subheader("Answer")
-
-    def _badge_citation(match):
-        nums = match.group(1)
-        return f'<span style="background:#eef1f4;border-radius:4px;padding:1px 6px;font-size:0.85em;font-weight:600;color:#1f2937;">[{nums}]</span>'
-
-    memo_html = re.sub(r'\[([\d,\s]+)\]', _badge_citation, result["answer"])
-    st.markdown(memo_html, unsafe_allow_html=True)
-
-    if used_chunks:
-        st.caption("Sources cited — click a number to see the exact excerpt it refers to:")
-        cols = st.columns(min(len(used_chunks), 6) or 1)
-        for i, chunk in enumerate(used_chunks):
-            with cols[i % len(cols)]:
-                with st.popover(f"[{i + 1}] {chunk['citation']}"):
-                    st.markdown(f"**{chunk['citation']}**")
-                    st.caption(f"Retrieval score: {chunk.get('score', 'n/a')}")
-                    st.write(chunk["text"])
+    render_memo_with_inline_citations(result["answer"], used_chunks)
 
     st.divider()
 

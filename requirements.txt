@@ -5,3 +5,5 @@ sentence-transformers
 scikit-learn
 numpy
 wordfreq
+gspread
+google-auth
