@@ -211,7 +211,7 @@ def _classify_claim_for_checklist(claim_text):
     return "other"
 
 
-_CHECKLIST_STEPS = [
+_STRUCTURED_VIEW_STEPS = [
     ("employee", "Confirm employment status", None),
     ("qualifying", "Confirm the space qualifies (must meet at least one)",
      "Only one of these needs to be true — but the space must still be used "
@@ -220,23 +220,50 @@ _CHECKLIST_STEPS = [
 ]
 
 
-def render_checklist(claim_results, query_id):
+def _split_enumeration_claim(claim_text):
+    """If a claim is a single run-on sentence listing several alternative
+    qualifying tests (the model's usual phrasing: "...for one of the
+    following: as X; as Y; ...; or as Z."), splits it into a short intro
+    line plus one bullet per alternative, so a dense sentence reads as an
+    actual list. Returns (intro, [items]) or (None, None) if the claim
+    doesn't match that pattern -- callers should fall back to rendering
+    the claim as a single line in that case.
+    """
+    match = re.search(r'(.*?\bfollowing:)\s*(.+)', claim_text, re.IGNORECASE | re.DOTALL)
+    if not match:
+        return None, None
+    intro, rest = match.group(1).strip(), match.group(2).strip()
+    parts = [p.strip() for p in re.split(r';\s*', rest) if p.strip()]
+    if len(parts) < 2:
+        return None, None
+    cleaned = []
+    for p in parts:
+        p = re.sub(r'^(or|and)\s+', '', p, flags=re.IGNORECASE)
+        p = p.rstrip('.').strip()
+        if p:
+            cleaned.append(p[0].upper() + p[1:])
+    return intro, cleaned
+
+
+def render_structured_view(claim_results):
     """Renders the same claim_results data used by the verification log as
-    a self/client-facing qualification checklist instead -- no new model
-    call, just a different view of data the pipeline already produced.
-    Claims are grouped into steps following the decision order of Pub.
-    587's own Figure A flowchart (employee status -> qualifying-use tests
-    -> deduction calculation), rather than a flat list. Verified claims
-    become checkable items, with a caution/flag marker if they were only
-    partially supported or unsupported. Decline-labeled claims (meta-
-    statements about missing information) go in a separate "Open items"
-    section, since they're not a yes/no criterion.
+    a plain-text, step-ordered breakdown instead -- no new model call,
+    just a different view of data the pipeline already produced. Claims
+    are grouped into steps following the decision order of Pub. 587's own
+    Figure A flowchart (employee status -> qualifying-use tests ->
+    deduction calculation), rather than a flat list. No checkboxes: most
+    of these claims are rules being explained, not facts to personally
+    confirm, so treating them as checkable items was misleading. A
+    caution/flag marker still appears on claims that were only partially
+    supported or unsupported. Decline-labeled claims (meta-statements
+    about missing information) go in a separate "Open items" section,
+    since they're not part of the step flow at all.
     """
     action_items = [r for r in claim_results if r["label"] != "DECLINE"]
     open_items = [r for r in claim_results if r["label"] == "DECLINE"]
 
     if not action_items and not open_items:
-        st.caption("No claims to show as a checklist.")
+        st.caption("No claims to show in structured view.")
         return
 
     grouped = {"employee": [], "qualifying": [], "calculation": [], "other": []}
@@ -244,10 +271,19 @@ def render_checklist(claim_results, query_id):
         grouped[_classify_claim_for_checklist(r["claim"])].append(r)
 
     icon = {"PARTIALLY SUPPORTED": "\u26a0\ufe0f ", "UNSUPPORTED": "\U0001f6a9 "}
-    checkbox_idx = 0
     step_num = 0
 
-    for key, title, note in _CHECKLIST_STEPS:
+    def _render_item(r):
+        flag = icon.get(r["label"], "")
+        intro, parts = _split_enumeration_claim(r["claim"])
+        if parts:
+            st.markdown(f"{flag}{intro}")
+            for p in parts:
+                st.markdown(f"- {p}")
+        else:
+            st.markdown(f"{flag}{r['claim']}")
+
+    for key, title, note in _STRUCTURED_VIEW_STEPS:
         items = grouped[key]
         if not items:
             continue
@@ -256,17 +292,13 @@ def render_checklist(claim_results, query_id):
         if note:
             st.caption(note)
         for r in items:
-            label_text = f"{icon.get(r['label'], '')}{r['claim']}"
-            st.checkbox(label_text, key=f"checklist_{query_id}_{checkbox_idx}")
-            checkbox_idx += 1
+            _render_item(r)
         st.markdown("")
 
     if grouped["other"]:
         st.markdown("**Additional considerations**")
         for r in grouped["other"]:
-            label_text = f"{icon.get(r['label'], '')}{r['claim']}"
-            st.checkbox(label_text, key=f"checklist_{query_id}_{checkbox_idx}")
-            checkbox_idx += 1
+            _render_item(r)
 
     if open_items:
         st.markdown("---")
@@ -464,15 +496,15 @@ if result:
     toggle_col, _ = st.columns([1, 4])
     with toggle_col:
         if st.session_state.view_mode == "answer":
-            if st.button("View as checklist"):
-                st.session_state.view_mode = "checklist"
+            if st.button("Structured View"):
+                st.session_state.view_mode = "structured"
                 st.rerun()
         else:
-            if st.button("View as answer"):
+            if st.button("View as Answer"):
                 st.session_state.view_mode = "answer"
                 st.rerun()
 
-    st.subheader("Answer" if st.session_state.view_mode == "answer" else "Checklist")
+    st.subheader("Answer" if st.session_state.view_mode == "answer" else "Structured View")
 
     if st.session_state.view_mode == "answer":
         render_memo_with_inline_citations(result["answer"], used_chunks)
@@ -481,7 +513,7 @@ if result:
             st.caption("Sources cited (click to expand):")
             render_source_list(used_chunks)
     else:
-        render_checklist(result["claim_results"], st.session_state.query_id)
+        render_structured_view(result["claim_results"])
 
     st.divider()
 
