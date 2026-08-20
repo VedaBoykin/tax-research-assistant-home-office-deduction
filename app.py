@@ -14,6 +14,7 @@ files pipeline.py's `files` registry expects.
 """
 
 import html
+import os
 import re
 
 import streamlit as st
@@ -193,6 +194,18 @@ st.warning(
 def get_corpus():
     return pipeline.load_corpus()
 
+
+# Propagate a Hugging Face access token into the environment, if the
+# secret is set, before get_corpus() (which downloads the embedding model)
+# runs. huggingface_hub (used under the hood by sentence-transformers)
+# looks for HF_TOKEN as a real OS environment variable -- it doesn't read
+# st.secrets directly, so this has to be copied over explicitly.
+# Unauthenticated downloads are rate-limited harder than authenticated
+# ones, which is a likely contributor to slow/stuck first loads. This is
+# optional: the app still works without it, just without the higher
+# rate limit.
+if "HF_TOKEN" in st.secrets:
+    os.environ["HF_TOKEN"] = st.secrets["HF_TOKEN"]
 
 try:
     corpus_info = get_corpus()
